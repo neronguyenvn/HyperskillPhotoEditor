@@ -1,0 +1,29 @@
+<div class="step-text">
+<h5 id="description">Description</h5><p>In this stage, we will add the save button. Users, obviously, need it to save a loaded photo so that it will appear in the gallery folder.</p><p>To save anything, we would require permission to write anything to the external storage.</p><h5 id="objectives">Objectives</h5><ul><li><p>Add a <code class="java">Button</code> with the <code class="java">id</code> attribute of <code class="java">btnSave</code> for saving photos;</p></li><li><p>Declare the required permissions in <em>AndroidManifest.xml</em>;</p></li><li><p>Add a proper <code class="java">onClick</code> method to <code class="java">btnSave</code>. This method should save the current photo; to <code class="java">MediaStore.Images.Media.EXTERNAL_CONTENT_URI</code> folder in <em>.jpeg</em> format; Use maximum quality for compression;</p></li><li><p>Before saving anything, check whether you have the permission <code class="java">Manifest.permission.WRITE_EXTERNAL_STORAGE</code>. If you don't have it, request permission first using ActivityCompat api; Use the value <code class="java">0</code> for <code class="java">requestCode</code> while requiring permission;</p></li><li><p>Override the <code class="java">onRequestPermissionsResult</code> method to check whether the permission was granted. If it was, continue the saving procedure; you might want to use <code class="java">saveButton.callOnClick()</code> for this.</p></li></ul><p>For API versions before <code class="java">Build.VERSION_CODES.M</code>, the permissions are granted on installation. So, there is no way or need for requesting run-time permission. If you still want to make the code that checks permissions, you can check the hint section after the examples.</p><h5 id="examples">Examples</h5><p><strong>Example 1:</strong> <em>the save button</em></p><p><picture><img alt="Photo Editor app: Saving a picture after changing the brightness" height="520" src="https://ucarecdn.com/69e9ca40-24b8-4ed6-b69f-6fd025ff6815/" width="270"/></picture></p><h5 id="hints">Hints</h5><p> </p><details><summary>To check whether the permissions were provided, you may use something like this:</summary><div><p><br/> </p><pre><code class="java">private fun hasPermission(manifestPermission: String): Boolean {
+  return if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M) {
+    this.checkSelfPermission(manifestPermission) == PackageManager.PERMISSION_GRANTED
+  } else {
+    PermissionChecker.checkSelfPermission(this, manifestPermission) == PermissionChecker.PERMISSION_GRANTED
+  }
+}</code></pre></div></details><p> </p><details><summary>To save anything to the external storage, you may want to use something similar to this (adapted to your code base):</summary><div><p><br/> </p><pre><code class="java">saveButton.setOnClickListener { _ -&gt;
+  if ( /* check if has permission */ ) {
+
+    val bitmap: Bitmap = /* image you want to save */
+    val values = ContentValues()
+    values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis())
+    values.put(Images.Media.MIME_TYPE, "image/jpeg")
+    values.put(Images.ImageColumns.WIDTH, bitmap.width)
+    values.put(Images.ImageColumns.HEIGHT, bitmap.height)
+
+    val uri = this@MainActivity.contentResolver.insert(
+      Images.Media.EXTERNAL_CONTENT_URI, values
+    ) ?: return@setOnClickListener
+
+    contentResolver.openOutputStream(uri).use {
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+    }
+  } else {
+      /* request permission */
+  }
+}</code></pre></div></details>
+</div>

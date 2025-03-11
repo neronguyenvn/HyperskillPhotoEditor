@@ -1,0 +1,9 @@
+type: framework
+content:
+  - Take a picture
+  - Brightness filter
+  - Save a picture
+  - Contrast filter
+  - Saturation and gamma
+  - No more freezes
+current_task: 0

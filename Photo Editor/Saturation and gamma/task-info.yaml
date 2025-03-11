@@ -1,0 +1,59 @@
+type: edu
+files:
+  - name: src/main/java/org/hyperskill/photoeditor/MainActivity.kt
+    visible: true
+    learner_created: false
+  - name: src/main/res/drawable/ic_launcher_background.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/drawable-v24/ic_launcher_foreground.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/layout/activity_main.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/values/colors.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/values/strings.xml
+    visible: true
+    learner_created: false
+  - name: src/main/res/values/styles.xml
+    visible: true
+    learner_created: false
+  - name: src/main/AndroidManifest.xml
+    visible: true
+    learner_created: false
+  - name: build.gradle
+    visible: true
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/internals/AbstractUnitTest.kt
+    visible: false
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/internals/CustomShadowBitmap.kt
+    visible: false
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/internals/PhotoEditorUnitTest.kt
+    visible: false
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/Stage2UnitTest.kt
+    visible: false
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/Stage3UnitTest.kt
+    visible: false
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/Stage4UnitTest.kt
+    visible: false
+    learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/Stage5UnitTest.kt
+    visible: false
+    learner_created: false
+feedback_link: https://hyperskill.org/projects/241/stages/1210/implement#comment
+status: Unchecked
+record: -1

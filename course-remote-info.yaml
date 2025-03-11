@@ -1,0 +1,288 @@
+hyperskill_project:
+  id: 241
+  ide_files: https://hyperskill.org/api/projects/241/additional-files/additional_files.json
+  is_template_based: false
+  use_ide: true
+  environment: android
+update_date: "Thu, 01 Jan 1970 00:00:00 UTC"
+stages:
+  - id: 1206
+    step: 18740
+    is_completed: true
+  - id: 1207
+    step: 18741
+    is_completed: false
+  - id: 1208
+    step: 18742
+    is_completed: false
+  - id: 1209
+    step: 18743
+    is_completed: false
+  - id: 1210
+    step: 18744
+    is_completed: false
+  - id: 1211
+    step: 18745
+    is_completed: false
+topics:
+  0:
+    - title: Introduction to UI/UX
+      theory_id: 14603
+    - title: Layout grids
+      theory_id: 14922
+    - title: Interface elements
+      theory_id: 15253
+    - title: Input fields and field labels
+      theory_id: 15447
+    - title: Fonts
+      theory_id: 15045
+    - title: Feedback
+      theory_id: 15308
+    - title: "Write, compile, and run"
+      theory_id: 3739
+    - title: "Basic terms: JVM, JRE, JDK"
+      theory_id: 3499
+    - title: Operating systems
+      theory_id: 9704
+    - title: Command line overview
+      theory_id: 8977
+    - title: Parameters and options
+      theory_id: 9746
+    - title: SQLite
+      theory_id: 14227
+    - title: ContentResolver
+      theory_id: 24720
+    - title: Build tools
+      theory_id: 4284
+    - title: "Gradle: overview"
+      theory_id: 5075
+    - title: External resources
+      theory_id: 6216
+    - title: Android studio basics
+      theory_id: 11048
+    - title: API Levels
+      theory_id: 11312
+    - title: What are databases
+      theory_id: 8497
+    - title: "SQL: structured query language"
+      theory_id: 7054
+    - title: Introduction to Android
+      theory_id: 6331
+    - title: XML
+      theory_id: 6901
+    - title: Android Project Structure
+      theory_id: 10752
+    - title: AndroidManifest File
+      theory_id: 10762
+    - title: Resources
+      theory_id: 11087
+    - title: Values
+      theory_id: 11370
+    - title: XML Layouts
+      theory_id: 10997
+    - title: "Text, images, and buttons"
+      theory_id: 12918
+    - title: Toast
+      theory_id: 11973
+    - title: Event listeners
+      theory_id: 12822
+    - title: Intent
+      theory_id: 11965
+    - title: Activity
+      theory_id: 15455
+    - title: "Starting Activities: intents in detail"
+      theory_id: 24801
+    - title: "Activity communication: returning data"
+      theory_id: 38574
+    - title: AlertDialog
+      theory_id: 12330
+    - title: Permissions
+      theory_id: 23292
+    - title: System apps and common intents
+      theory_id: 30746
+  1:
+    - title: Modulo division
+      theory_id: 10586
+    - title: Modulo division with negative numbers
+      theory_id: 13541
+    - title: Loading images with Picasso
+      theory_id: 16044
+    - title: Vector and raster graphics
+      theory_id: 14210
+    - title: Graphic file formats
+      theory_id: 14344
+    - title: Introduction to Kotlin
+      theory_id: 4350
+    - title: "Basic literals: numbers, strings and characters"
+      theory_id: 4351
+    - title: Writing first program
+      theory_id: 4362
+    - title: Values and variables
+      theory_id: 4371
+    - title: Constants and val variables
+      theory_id: 17408
+    - title: Data types
+      theory_id: 4388
+    - title: Standard output
+      theory_id: 4425
+    - title: Invoking functions
+      theory_id: 4575
+    - title: Standard input with Java Scanner
+      theory_id: 4445
+    - title: String basics
+      theory_id: 12553
+    - title: Boolean type and operations. True and false
+      theory_id: 4515
+    - title: Arithmetic operations
+      theory_id: 4472
+    - title: RGB
+      theory_id: 8819
+    - title: Drawables overview
+      theory_id: 12832
+    - title: Graphics overview. Implementing a Drawable
+      theory_id: 13899
+    - title: Bitmap
+      theory_id: 16539
+    - title: Euclidean division
+      theory_id: 22102
+  2:
+    - title: "Internal, external, scoped storage"
+      theory_id: 40010
+    - title: MediaStore
+      theory_id: 36145
+    - title: Files
+      theory_id: 13025
+  3:
+    - title: Increment and decrement
+      theory_id: 10776
+    - title: Properties of basic types
+      theory_id: 4455
+    - title: Type conversion
+      theory_id: 4672
+    - title: Reading data with readln
+      theory_id: 11224
+    - title: "When different types meet: type coercion"
+      theory_id: 9506
+    - title: Integers in action
+      theory_id: 4488
+    - title: Floating-point types
+      theory_id: 4502
+  5:
+    - title: Data structures
+      theory_id: 40371
+    - title: Abstract and concrete data structures
+      theory_id: 16927
+    - title: Stack
+      theory_id: 5252
+    - title: Crashlytics
+      theory_id: 30735
+    - title: Coroutines in Android
+      theory_id: 31892
+    - title: Comments
+      theory_id: 4406
+    - title: Kotlin style guide. Coding conventions
+      theory_id: 4419
+    - title: Naming variables
+      theory_id: 4389
+    - title: String templates
+      theory_id: 4547
+    - title: What is object-oriented programming
+      theory_id: 3614
+    - title: JAR files
+      theory_id: 4311
+    - title: Basic project with Gradle
+      theory_id: 5077
+    - title: Building apps using Gradle
+      theory_id: 7917
+    - title: Gradle build configuration
+      theory_id: 35988
+    - title: "Dependency management: repositories"
+      theory_id: 37189
+    - title: Comparing numbers. Relational operators
+      theory_id: 4525
+    - title: Declaring functions
+      theory_id: 4580
+    - title: If expression
+      theory_id: 4625
+    - title: Errors in programs
+      theory_id: 11559
+    - title: Nullable and non-nullable types
+      theory_id: 7613
+    - title: Type system
+      theory_id: 9689
+    - title: "Loops: repeat statement"
+      theory_id: 4643
+    - title: While loops
+      theory_id: 4659
+    - title: Objects and their properties
+      theory_id: 11233
+    - title: Declaring classes
+      theory_id: 6200
+    - title: Ranges
+      theory_id: 4633
+    - title: When expression
+      theory_id: 4631
+    - title: Functional decomposition
+      theory_id: 12668
+    - title: Default arguments
+      theory_id: 4637
+    - title: Named arguments
+      theory_id: 4640
+    - title: Constructors
+      theory_id: 10740
+    - title: Member functions
+      theory_id: 6364
+    - title: Call stack
+      theory_id: 11550
+    - title: Scopes
+      theory_id: 17116
+    - title: "Synchronous, asynchronous, parallel"
+      theory_id: 9332
+    - title: Processes and threads
+      theory_id: 9420
+    - title: Inheritance
+      theory_id: 9844
+    - title: Inheritance
+      theory_id: 7770
+    - title: Polymorphism
+      theory_id: 10027
+    - title: Overriding functions
+      theory_id: 7884
+    - title: build.gradle files
+      theory_id: 15053
+    - title: Simultaneous tasks
+      theory_id: 8544
+    - title: First steps to coroutines
+      theory_id: 10279
+    - title: Asynchronous programming techniques & problems
+      theory_id: 14503
+    - title: Suspending functions
+      theory_id: 13722
+    - title: "Coroutine builders: overview"
+      theory_id: 13749
+    - title: Structured Concurrency & Cancellation
+      theory_id: 18891
+    - title: Сontext and Dispatchers
+      theory_id: 20498
+    - title: Exception
+      theory_id: 7243
+    - title: Hierarchy of exceptions
+      theory_id: 13264
+    - title: Taming exceptions
+      theory_id: 7601
+    - title: Avoiding NPEs. Null safety
+      theory_id: 7619
+    - title: Try-catch statement
+      theory_id: 10622
+    - title: Thread as object
+      theory_id: 15809
+    - title: Custom threads
+      theory_id: 16006
+    - title: Thread management
+      theory_id: 16200
+    - title: Exceptions in threads
+      theory_id: 16422
+    - title: Shared data
+      theory_id: 18946
+    - title: States of a thread
+      theory_id: 20159

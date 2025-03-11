@@ -1,0 +1,48 @@
+<div class="step-text">
+<h5 id="description">Description</h5><p>If you've tried testing the app manually with a medium-sized image from the gallery, you've probably noticed that filters take some time. The app becomes unresponsive to the interaction with UI components while applying filters.</p><p>In this stage, we will make use of one of Kotlin's most prominent features: the <strong>coroutines</strong>. Applying filters should no longer freeze UI, as it should be done in the background.</p><h5 id="objectives">Objectives</h5><ul><li><p>Make sure you have the following dependencies added to the <em>build.gradle</em> file:</p><pre><code class="language-kotlin">implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"</code></pre></li><li><p>Apply your filter functions asynchronously through the use of coroutines;</p></li><li><p>Don't use <code class="language-kotlin">Dispatchers.Main</code> for computations, use <code class="language-kotlin">Dispatchers.Default</code> instead;</p></li><li><p>The <code class="language-kotlin">view</code> updates should be done via <code class="language-kotlin">Dispatchers.Main</code>. You may use the following shortcut for switching context:</p><pre><code class="language-kotlin">runOnUiThread { /* your code to update views */ } </code></pre></li><li><p>Our goal is to make the app responsive while filters are processed. You don't need to speed up the computations themselves;</p></li><li><p>If scheduled computation becomes irrelevant (slider values change before calculations) it would be a good thing to cancel that computation.</p></li><li><p>Remember, having mutable shared state can cause race conditions. Try not using mutable shared state</p></li></ul><p>Take a look at <a href="https://blog.mindorks.com/mastering-kotlin-coroutines-in-android-step-by-step-guide" rel="noopener noreferrer nofollow" target="_blank">Mastering Kotlin Coroutines In Android - Step By Step Guide</a> by Amit Shekhar to get more info on the subject. It may be also a good idea to follow <a href="https://www.youtube.com/watch?v=ShNhJ3wMpvQ&amp;list=PLQkwcJG4YTCQcFEPuYGuv54nYai_lwil_" rel="noopener noreferrer nofollow" target="_blank">the Kotlin Coroutines</a> playlist by Philipp Lackner.</p><p>Even with these references, you may still feel overwhelmed by this flow of new information if you are not familiar with the subject. Some code hints will be provided after the example images. It is strongly recommended to try yourself first before checking them.</p><h5 id="example">Example</h5><p><strong>Example 1:</strong> <em>coroutines</em></p><p>Before: (1200x1600 pixels image)</p><p><picture><img alt="Changing the brightness, contrast, saturation, gamma of the picture" height="520" src="https://ucarecdn.com/020981df-aff0-4eac-b056-1df62718ea84/" width="270"/></picture></p><p>After: (1200x1600 pixels image)</p><p><picture><img alt="Changing the brightness, contrast, saturation, gamma of the image" height="520" src="https://ucarecdn.com/5434d0b2-48c3-4240-a093-b5794e102f93/" width="270"/></picture></p><p> </p><h5 id="hints">Hints</h5><details><summary>If you struggling with coroutines, you can get inspired by the code snippet below. Don't forget to change it to your codebase needs (this is better viewed on JetBrains Academy since the code is wide).</summary><div><p><br/> </p><pre><code class="language-kotlin">
+private var lastJob: Job? = null  // the field to keep track of the last job in case we wish to cancel it
+
+/* other fields and other methods from MainActivity */
+
+private fun onSliderChanges(slider: Slider, sliderValue: Float, fromUser: Boolean) {
+
+  lastJob?.cancel()  // we don't need the lastJob computations anymore. If it was already computed nothing happens.
+
+  lastJob = GlobalScope.launch(Dispatchers.Default) {
+    //  the execution inside this block is already asynchronous as you can see by the print below
+
+    //  I/System.out: onSliderChanges job making calculations running on thread DefaultDispatcher-worker-1
+    println("onSliderChanges " + "job making calculations running on thread ${Thread.currentThread().name}")
+
+    // if the current image is null, we have nothing to do with it
+    val bitmap = currentOriginalImageDrawable?.bitmap ?: return@launch
+
+    // if you need to make some computations and wait for the result, you can use the async block
+    // it will schedule a new coroutine task and return a Deferred object that will have the
+    // returned value
+    val brightenCopyDeferred: Deferred&lt;Bitmap&gt; = this.async {
+      /* invoke your computation that returns a value */
+      /* making some brightness calculations */
+    }
+    // here we wait for the result
+    val brightenCopy: Bitmap = brightenCopyDeferred.await()
+
+
+    // since you are already on a worker thread, you don't have to use the async block
+    val contrastedCopy = /* invoke computations for contrast filter */
+
+    /* do more calculations */
+
+    /* check if job was canceled */
+    ensureActive()
+
+    // to update view, we need to change the thread context to the main thread
+    runOnUiThread {
+      // here we are already on the main thread, as you can see on the println below
+      //  I/System.out: onSliderChanges job updating view running on thread main
+      println("onSliderChanges " + "job updating view running on thread ${Thread.currentThread().name}")
+      currentImage.setImageBitmap(/* your new value */)
+    }
+  }
+}</code></pre></div></details>
+</div>

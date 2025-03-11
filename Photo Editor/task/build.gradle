@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+  compileSdk hs.android.compileSdkVersion
+  namespace "org.hyperskill.photoeditor"
+
+  defaultConfig {
+
+    applicationId "org.hyperskill.photoeditor"
+    minSdkVersion hs.android.minSdkVersion
+    targetSdkVersion hs.android.targetSdkVersion
+    versionCode 1
+    versionName '1.0'
+  }
+
+  buildFeatures {
+    viewBinding true
+  }
+
+  compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {
+  def kotlinVersion = hs.android.kotlinVersion
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+
+  def coreKtx = hs.android.lib.coreKtx
+  implementation "androidx.core:core-ktx:$coreKtx"
+
+  def appCompat = hs.android.lib.appCompat
+  implementation "androidx.appcompat:appcompat:$appCompat"
+
+  def constraintLayout = hs.android.lib.constraintLayout
+  implementation "androidx.constraintlayout:constraintlayout:$constraintLayout"
+
+  def material = hs.android.lib.material
+  implementation "com.google.android.material:material:$material"
+}

@@ -1,0 +1,19 @@
+type: hyperskill
+title: Photo Editor
+language: English
+summary: "<p>Everyone has tried editing photos and pictures in an editor. Most of\
+  \ them are paid or filled with ads. Why not create one and add every possible feature\
+  \ that comes to mind? In this project, create a simple photo editor that allows\
+  \ you to pick any photo from your device, apply basic filters, and save the result.</p><br/><br/>Learn\
+  \ more at <a href=\"https://hyperskill.org/projects/241?utm_source=ide&utm_medium=ide&utm_campaign=ide&utm_content=project-card\"\
+  >https://hyperskill.org/projects/241</a>"
+programming_language: Kotlin
+environment: Android
+content:
+  - Photo Editor
+additional_files:
+  - name: build.gradle
+  - name: settings.gradle
+  - name: gradle.properties
+mode: Study
+yaml_version: 2
