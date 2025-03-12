@@ -1,14 +1,13 @@
 package org.hyperskill.photoeditor
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.drawToBitmap
 import org.hyperskill.photoeditor.databinding.ActivityMainBinding
 
 
@@ -21,24 +20,27 @@ class MainActivity : AppCompatActivity() {
     private val activityResultLauncher = registerForActivityResult(
         StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val photoUri = result.data?.data ?: return@registerForActivityResult
-            // code to update ivPhoto with loaded image
             binding.ivPhoto.setImageURI(photoUri)
+            originalBitmap = binding.ivPhoto.drawToBitmap()
+            binding.slBrightness.value = 0f
         }
     }
+
+    private lateinit var originalBitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        //do not change this line
-        binding.ivPhoto.setImageBitmap(createBitmap())
+        originalBitmap = createBitmap()
+        binding.ivPhoto.setImageBitmap(originalBitmap)
 
         setupActionListeners()
+        setupOnChangeListeners()
     }
 
-    // do not change this function
     private fun createBitmap(): Bitmap {
         val width = 200
         val height = 100
@@ -77,6 +79,38 @@ class MainActivity : AppCompatActivity() {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 )
             )
+        }
+    }
+
+    private fun setupOnChangeListeners() = with(binding) {
+        slBrightness.addOnChangeListener { _, value, _ ->
+
+            val (width, height) = with(originalBitmap) { width to height }
+            val pixels = IntArray(width * height)
+            originalBitmap.getPixels(
+                pixels, 0, width, 0, 0, width, height
+            )
+
+            val intValue = value.toInt()
+
+            for (i in pixels.indices) {
+                val pixel = pixels[i]
+                val alpha = Color.alpha(pixel)
+                var red = Color.red(pixel) + intValue
+                var green = Color.green(pixel) + intValue
+                var blue = Color.blue(pixel) + intValue
+
+                // Apply brightness correction with limits
+                red = red.coerceIn(0, 255)
+                green = green.coerceIn(0, 255)
+                blue = blue.coerceIn(0, 255)
+
+                pixels[i] = Color.argb(alpha, red, green, blue)
+            }
+
+            val resultBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true)
+            resultBitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+            ivPhoto.setImageBitmap(resultBitmap)
         }
     }
 }

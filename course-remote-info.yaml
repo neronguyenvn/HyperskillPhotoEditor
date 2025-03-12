@@ -11,7 +11,7 @@ stages:
     is_completed: true
   - id: 1207
     step: 18741
-    is_completed: false
+    is_completed: true
   - id: 1208
     step: 18742
     is_completed: false
