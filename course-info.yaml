@@ -11,9 +11,5 @@ programming_language: Kotlin
 environment: Android
 content:
   - Photo Editor
-additional_files:
-  - name: build.gradle
-  - name: settings.gradle
-  - name: gradle.properties
 mode: Study
 yaml_version: 2

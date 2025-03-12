@@ -45,6 +45,6 @@ files:
   - name: src/test/java/org/hyperskill/photoeditor/Stage2UnitTest.kt
     visible: false
     learner_created: false
-feedback_link: https://hyperskill.org/projects/241/stages/1207/implement#comment
+feedback_link: https://hyperskill.org/learn/step/18741#comment
 status: Failed
 record: 1
