@@ -56,5 +56,9 @@ files:
     is_binary: true
     learner_created: true
 feedback_link: https://hyperskill.org/learn/step/18742#comment
-status: Unchecked
+status: Failed
+feedback:
+  message: Image saved is not the same as the image that was displaying before the
+    click
+  time: "Thu, 13 Mar 2025 15:08:07 UTC"
 record: -1

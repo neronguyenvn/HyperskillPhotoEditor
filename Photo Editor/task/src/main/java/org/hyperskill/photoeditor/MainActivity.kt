@@ -1,15 +1,17 @@
 package org.hyperskill.photoeditor
 
+import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.provider.MediaStore.Images
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.drawToBitmap
 import org.hyperskill.photoeditor.databinding.ActivityMainBinding
 
@@ -79,13 +81,20 @@ class MainActivity : AppCompatActivity() {
         btnGallery.setOnClickListener {
             launchGallery()
         }
+        btnSave.setOnClickListener {
+            if (hasWriteExternalPermission()) {
+                saveCurrentPhoto()
+            } else {
+                requestWriteExternalPermission()
+            }
+        }
     }
 
 
     private fun launchGallery() {
         val galleryIntent = Intent(
             Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            Images.Media.EXTERNAL_CONTENT_URI
         )
         galleryLauncher.launch(galleryIntent)
     }
@@ -122,5 +131,37 @@ class MainActivity : AppCompatActivity() {
             result.setPixels(pixels, 0, width, 0, 0, width, height)
             binding.ivPhoto.setImageBitmap(result)
         }
+    }
+
+    private fun hasWriteExternalPermission(): Boolean {
+        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+        } else true
+    }
+
+    private fun saveCurrentPhoto() {
+        val values = ContentValues().apply {
+            put(Images.Media.DATE_TAKEN, System.currentTimeMillis())
+            put(Images.Media.MIME_TYPE, "image/jpeg")
+            put(Images.ImageColumns.WIDTH, originalBitmap.width)
+            put(Images.ImageColumns.HEIGHT, originalBitmap.height)
+        }
+
+        val uri = contentResolver.insert(
+            Images.Media.EXTERNAL_CONTENT_URI, values
+        ) ?: return
+
+        contentResolver.openOutputStream(uri)?.use { output ->
+            originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+        }
+    }
+
+    private fun requestWriteExternalPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            0
+        )
     }
 }
