@@ -47,6 +47,17 @@ class MainActivity : AppCompatActivity() {
         setupBrightnessChangeListener()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 0) {
+            saveCurrentPhoto()
+        }
+    }
+
     private fun createBitmap(): Bitmap {
         val width = 200
         val height = 100
@@ -72,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // output bitmap
-        val bitmapOut = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val bitmapOut = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
         bitmapOut.setPixels(pixels, 0, width, 0, 0, width, height)
         return bitmapOut
     }
