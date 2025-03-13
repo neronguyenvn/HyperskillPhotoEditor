@@ -48,6 +48,13 @@ files:
   - name: src/test/java/org/hyperskill/photoeditor/Stage3UnitTest.kt
     visible: false
     learner_created: false
+  - name: src/test/java/org/hyperskill/photoeditor/Stage1UnitTest.kt
+    visible: true
+    learner_created: true
+  - name: src/main/res/drawable/myexample.jpg
+    visible: true
+    is_binary: true
+    learner_created: true
 feedback_link: https://hyperskill.org/learn/step/18742#comment
 status: Unchecked
 record: -1
