@@ -28,23 +28,25 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             result.data?.data?.let { photoUri ->
                 binding.ivPhoto.setImageURI(photoUri)
-                originalBitmap = binding.ivPhoto.drawToBitmap()
+                currentBitmap = binding.ivPhoto.drawToBitmap()
                 binding.slBrightness.value = 0f
             }
         }
     }
 
-    private lateinit var originalBitmap: Bitmap
+    private lateinit var currentBitmap: Bitmap
+    private lateinit var brightnessAppliedBitmap: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        originalBitmap = createBitmap()
-        binding.ivPhoto.setImageBitmap(originalBitmap)
+        currentBitmap = createBitmap()
+        binding.ivPhoto.setImageBitmap(currentBitmap)
 
         setupActionListeners()
         setupBrightnessChangeListener()
+        setupContrastChangeListener()
     }
 
     override fun onRequestPermissionsResult(
@@ -113,15 +115,23 @@ class MainActivity : AppCompatActivity() {
     private fun setupBrightnessChangeListener() = with(binding) {
         slBrightness.addOnChangeListener { _, value, _ ->
             adjustBrightness(value.toInt())
+            adjustContrast(slContrast.value.toInt())
+        }
+    }
+
+    private fun setupContrastChangeListener() = with(binding) {
+        slContrast.addOnChangeListener { _, value, _ ->
+            adjustBrightness(slBrightness.value.toInt())
+            adjustContrast(value.toInt())
         }
     }
 
     private fun adjustBrightness(brightnessValue: Int) {
-        val width = originalBitmap.width
-        val height = originalBitmap.height
+        val width = currentBitmap.width
+        val height = currentBitmap.height
         val pixels = IntArray(width * height)
 
-        originalBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+        currentBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
 
         for (i in pixels.indices) {
             val pixel = pixels[i]
@@ -138,7 +148,45 @@ class MainActivity : AppCompatActivity() {
             pixels[i] = Color.argb(alpha, red, green, blue)
         }
 
-        originalBitmap.copy(Bitmap.Config.ARGB_8888, true).let { result ->
+        brightnessAppliedBitmap = currentBitmap
+            .copy(Bitmap.Config.ARGB_8888, true)
+            .apply { setPixels(pixels, 0, width, 0, 0, width, height) }
+
+        binding.ivPhoto.setImageBitmap(brightnessAppliedBitmap)
+    }
+
+    private fun adjustContrast(contrastValue: Int) {
+        val width = currentBitmap.width
+        val height = currentBitmap.height
+        val pixels = IntArray(width * height)
+
+        brightnessAppliedBitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+
+        val alpha = (255 + contrastValue).toDouble() / (255 - contrastValue)
+
+        val avgBright = pixels
+            .sumOf { pixel ->
+                Color.red(pixel) + Color.green(pixel) + Color.blue(pixel)
+            }
+            .div(pixels.size * 3).toInt()
+
+
+        for (i in pixels.indices) {
+            val pixel = pixels[i]
+            var red = (alpha * (Color.red(pixel) - avgBright) + avgBright).toInt()
+            var green = (alpha * (Color.green(pixel) - avgBright) + avgBright).toInt()
+            var blue = (alpha * (Color.blue(pixel) - avgBright) + avgBright).toInt()
+
+            // Apply brightness correction with limits
+            red = red.coerceIn(0, 255)
+            green = green.coerceIn(0, 255)
+            blue = blue.coerceIn(0, 255)
+
+            pixels[i] = Color.argb(Color.alpha(pixel), red, green, blue)
+        }
+
+
+        brightnessAppliedBitmap.copy(Bitmap.Config.ARGB_8888, true).let { result ->
             result.setPixels(pixels, 0, width, 0, 0, width, height)
             binding.ivPhoto.setImageBitmap(result)
         }
@@ -155,8 +203,8 @@ class MainActivity : AppCompatActivity() {
         val values = ContentValues().apply {
             put(Images.Media.DATE_TAKEN, System.currentTimeMillis())
             put(Images.Media.MIME_TYPE, "image/jpeg")
-            put(Images.ImageColumns.WIDTH, originalBitmap.width)
-            put(Images.ImageColumns.HEIGHT, originalBitmap.height)
+            put(Images.ImageColumns.WIDTH, currentBitmap.width)
+            put(Images.ImageColumns.HEIGHT, currentBitmap.height)
         }
 
         val uri = contentResolver.insert(
@@ -164,7 +212,7 @@ class MainActivity : AppCompatActivity() {
         ) ?: return
 
         contentResolver.openOutputStream(uri)?.use { output ->
-            originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+            currentBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
         }
     }
 
