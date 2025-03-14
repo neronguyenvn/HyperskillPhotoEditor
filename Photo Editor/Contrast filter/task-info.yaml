@@ -58,9 +58,12 @@ files:
     visible: true
     is_binary: true
     learner_created: true
+  - name: src/main/java/org/hyperskill/photoeditor/ImageProcessor.kt
+    visible: true
+    learner_created: true
 feedback_link: https://hyperskill.org/learn/step/18743#comment
 status: Solved
 feedback:
   message: Congratulations!
-  time: "Fri, 14 Mar 2025 15:11:45 UTC"
+  time: "Sat, 15 Mar 2025 10:50:11 UTC"
 record: 4
