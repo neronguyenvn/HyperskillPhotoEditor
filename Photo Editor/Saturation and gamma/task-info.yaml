@@ -51,9 +51,6 @@ files:
   - name: src/test/java/org/hyperskill/photoeditor/Stage4UnitTest.kt
     visible: false
     learner_created: false
-  - name: src/test/java/org/hyperskill/photoeditor/Stage5UnitTest.kt
-    visible: false
-    learner_created: false
   - name: src/test/java/org/hyperskill/photoeditor/Stage1UnitTest.kt
     visible: true
     learner_created: true

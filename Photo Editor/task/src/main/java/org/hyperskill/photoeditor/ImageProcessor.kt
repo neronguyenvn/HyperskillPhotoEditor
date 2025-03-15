@@ -9,88 +9,100 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import java.io.IOException
 
-class ImageProcessor(private val context: Context, private var loadedImage: Bitmap) {
+class ImageProcessor(private val context: Context, loadedImage: Bitmap) {
 
     private val _processedImage = MutableStateFlow<Bitmap>(loadedImage)
-    val processedImage = _processedImage.asStateFlow()
+    private val _brightnessFilterValue = MutableStateFlow(0f)
+    private val _contrastFilterValue = MutableStateFlow(0f)
 
-    fun updateImage(uri: Uri) {
+    val processedImage = combine(
+        _processedImage,
+        _brightnessFilterValue,
+        _contrastFilterValue
+    ) { image, brightness, contrast ->
+
+        image
+            .changeBrightnessInternally(brightness.toInt())
+            .changeContrastInternally(contrast)
+    }
+
+    fun setImage(imageUri: Uri) {
         val bitmap = BitmapFactory
-            .decodeStream(context.contentResolver.openInputStream(uri))
+            .decodeStream(context.contentResolver.openInputStream(imageUri))
             ?: throw IOException("No such file or Incorrect format")
 
-        loadedImage = bitmap
         _processedImage.update { bitmap }
     }
 
-    fun changeBrightness(value: Float = 0f) {
-        with(loadedImage) {
-            if (value == 0f) {
-                return@with
-            }
-
-            val pixelBuffer = IntArray(width * height)
-            getPixels(pixelBuffer, 0, width, 0, 0, width, height)
-
-            val newImage = copy(Bitmap.Config.ARGB_8888, true)
-            val intValue = value.toInt()
-
-            for (i in pixelBuffer.indices) {
-                val pixel = pixelBuffer[i]
-                val red = pixel.red.plusAndCoerce(intValue)
-                val green = pixel.green.plusAndCoerce(intValue)
-                val blue = pixel.blue.plusAndCoerce(intValue)
-                pixelBuffer[i] = Color.rgb(red, green, blue)
-            }
-
-            newImage.setPixels(pixelBuffer, 0, width, 0, 0, width, height)
-            _processedImage.update { newImage }
-        }
+    fun changeBrightness(value: Float) {
+        _brightnessFilterValue.update { value }
     }
 
     fun changeContrast(value: Float) {
-        with(_processedImage.value) {
-            if (value == 0f) {
-                return@with
-            }
+        _contrastFilterValue.update { value }
+    }
 
-            val pixelBuffer = IntArray(width * height)
-            getPixels(pixelBuffer, 0, width, 0, 0, width, height)
-
-            val newImage = copy(Bitmap.Config.ARGB_8888, true)
-            val alpha = (255 + value) / (255 - value)
-
-            val avgBright = pixelBuffer
-                .sumOf { pixel ->
-                    Color.red(pixel) + Color.green(pixel) + Color.blue(pixel)
-                }
-                .div(pixelBuffer.size * 3)
-
-            for (i in pixelBuffer.indices) {
-                val pixel = pixelBuffer[i]
-
-                val red = (alpha * (pixel.red - avgBright) + avgBright)
-                    .toInt()
-                    .plusAndCoerce()
-
-                val green = (alpha * (pixel.green - avgBright) + avgBright)
-                    .toInt()
-                    .plusAndCoerce()
-
-                val blue = (alpha * (pixel.blue - avgBright) + avgBright)
-                    .toInt()
-                    .plusAndCoerce()
-
-                pixelBuffer[i] = Color.rgb(red, green, blue)
-            }
-
-            newImage.setPixels(pixelBuffer, 0, width, 0, 0, width, height)
-            _processedImage.update { newImage }
+    private fun Bitmap.changeBrightnessInternally(value: Int = 0): Bitmap {
+        if (value == 0) {
+            return this
         }
+
+        val pixelBuffer = IntArray(width * height)
+        getPixels(pixelBuffer, 0, width, 0, 0, width, height)
+
+        val newImage = copy(Bitmap.Config.ARGB_8888, true)
+
+        for (i in pixelBuffer.indices) {
+            val pixel = pixelBuffer[i]
+            val red = pixel.red.plusAndCoerce(value)
+            val green = pixel.green.plusAndCoerce(value)
+            val blue = pixel.blue.plusAndCoerce(value)
+            pixelBuffer[i] = Color.rgb(red, green, blue)
+        }
+
+        newImage.setPixels(pixelBuffer, 0, width, 0, 0, width, height)
+        return newImage
+    }
+
+    private fun Bitmap.changeContrastInternally(value: Float = 0f): Bitmap {
+        if (value == 0f) {
+            return this
+        }
+
+        val pixelBuffer = IntArray(width * height)
+        getPixels(pixelBuffer, 0, width, 0, 0, width, height)
+
+        val newImage = copy(Bitmap.Config.ARGB_8888, true)
+        val contrastFactor = (255 + value) / (255 - value)
+
+        val rgbAvg = pixelBuffer
+            .sumOf { pixel -> pixel.red + pixel.green + pixel.blue }
+            .div(pixelBuffer.size * 3)
+
+        for (i in pixelBuffer.indices) {
+            val pixel = pixelBuffer[i]
+
+            val red = (contrastFactor * (pixel.red - rgbAvg) + rgbAvg)
+                .toInt()
+                .plusAndCoerce()
+
+            val green = (contrastFactor * (pixel.green - rgbAvg) + rgbAvg)
+                .toInt()
+                .plusAndCoerce()
+
+            val blue = (contrastFactor * (pixel.blue - rgbAvg) + rgbAvg)
+                .toInt()
+                .plusAndCoerce()
+
+            pixelBuffer[i] = Color.rgb(red, green, blue)
+        }
+
+        newImage.setPixels(pixelBuffer, 0, width, 0, 0, width, height)
+        return newImage
     }
 
     private fun Int.plusAndCoerce(value: Int = 0): Int {

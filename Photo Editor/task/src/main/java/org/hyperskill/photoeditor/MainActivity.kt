@@ -13,8 +13,10 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.hyperskill.photoeditor.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             result.data?.data?.let { imageUri ->
-                imageProcessor.updateImage(imageUri)
+                imageProcessor.setImage(imageUri)
                 imageView.setImageURI(imageUri)
             }
         }
@@ -119,11 +121,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupSliderListeners() = with(binding) {
         slBrightness.addOnChangeListener { _, value, _ ->
             imageProcessor.changeBrightness(value)
-            imageProcessor.changeContrast(slContrast.value)
         }
 
         slContrast.addOnChangeListener { _, value, _ ->
-            imageProcessor.changeBrightness(slBrightness.value)
             imageProcessor.changeContrast(value)
         }
     }
@@ -136,20 +136,24 @@ class MainActivity : AppCompatActivity() {
         } else true
     }
 
-    private fun saveCurrentPhoto() = imageProcessor.processedImage.value.let { currentBitmap ->
-        val values = ContentValues().apply {
-            put(Images.Media.DATE_TAKEN, System.currentTimeMillis())
-            put(Images.Media.MIME_TYPE, "image/jpeg")
-            put(Images.ImageColumns.WIDTH, currentBitmap.width)
-            put(Images.ImageColumns.HEIGHT, currentBitmap.height)
-        }
+    private fun saveCurrentPhoto() {
+        lifecycleScope.launch {
+            imageProcessor.processedImage.first().let { currentBitmap ->
+                val values = ContentValues().apply {
+                    put(Images.Media.DATE_TAKEN, System.currentTimeMillis())
+                    put(Images.Media.MIME_TYPE, "image/jpeg")
+                    put(Images.ImageColumns.WIDTH, currentBitmap.width)
+                    put(Images.ImageColumns.HEIGHT, currentBitmap.height)
+                }
 
-        val uri = contentResolver.insert(
-            Images.Media.EXTERNAL_CONTENT_URI, values
-        ) ?: return@let
+                val uri = contentResolver.insert(
+                    Images.Media.EXTERNAL_CONTENT_URI, values
+                ) ?: return@let
 
-        contentResolver.openOutputStream(uri)?.use { output ->
-            currentBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                contentResolver.openOutputStream(uri)?.use { output ->
+                    currentBitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                }
+            }
         }
     }
 
