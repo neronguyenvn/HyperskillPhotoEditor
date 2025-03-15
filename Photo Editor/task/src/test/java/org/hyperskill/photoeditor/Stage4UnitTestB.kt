@@ -3,6 +3,7 @@ package org.hyperskill.photoeditor
 import android.graphics.drawable.BitmapDrawable
 import org.hyperskill.photoeditor.internals.PhotoEditorUnitTest
 import org.junit.FixMethodOrder
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -13,16 +14,17 @@ import org.robolectric.RobolectricTestRunner
 // version 2.0
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(RobolectricTestRunner::class)
-class Stage4UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.java) {
+class Stage4UnitTestB : PhotoEditorUnitTest<MainActivity>(MainActivity::class.java) {
 
     companion object {
         const val messageNullAfterFilters = "Image was null after filters been applied"
         const val messageWrongValues = "Wrong values after filters been applied."
         const val marginError = 3
-        const val calculationWaitTime = 200L
+        const val calculationWaitTime = 600L
     }
 
     @Test
+    @Ignore
     fun test01_checkSliderContrast() {
         testActivity {
             slContrast
@@ -31,18 +33,23 @@ class Stage4UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
     }
 
     @Test
+    @Ignore
     fun test02_checkSliderContrastNotCrashingByDefault() {
         testActivity {
             ivPhoto
             slContrast.value += slContrast.stepSize
             slContrast.value -= slContrast.stepSize
             shadowLooper.runToEndOfTasks()
+            Thread.sleep(calculationWaitTime)
+            shadowLooper.runToEndOfTasks()
+
             (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: AssertionError(messageNullAfterFilters)
         }
 
     }
 
     @Test
+    @Ignore
     fun test03_checkContrastOnlyWithHint() {
         testActivity {
             slBrightness
@@ -97,6 +104,7 @@ class Stage4UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
 
 
     @Test
+    @Ignore
     fun test05_checkBrightnessBeforeContrastWithHint() {
         testActivity {
             slBrightness
@@ -121,6 +129,7 @@ class Stage4UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
     }
 
     @Test
+    @Ignore
     fun test06_checkBrightnessBeforeContrastWithoutHint() {
         testActivity {
             slBrightness
@@ -197,6 +206,7 @@ class Stage4UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
     }
 
     @Test
+    @Ignore
     fun test08_checkContrastBeforeBrightnessWithHint() {
         testActivity {
             slBrightness

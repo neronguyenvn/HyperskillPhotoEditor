@@ -10,10 +10,11 @@ import org.junit.runners.MethodSorters
 import org.robolectric.RobolectricTestRunner
 
 
+
 // version 2.0
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(RobolectricTestRunner::class)
-class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.java) {
+class Stage5UnitTestB : PhotoEditorUnitTest<MainActivity>(MainActivity::class.java) {
 
     companion object {
         const val messageNullAfterFilters = "Image was null after filters been applied"
@@ -49,8 +50,7 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             Thread.sleep(calculationWaitTime)
             shadowLooper.runToEndOfTasks()
             (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
         }
     }
 
@@ -65,8 +65,7 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             Thread.sleep(calculationWaitTime)
             shadowLooper.runToEndOfTasks()
             (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
         }
     }
 
@@ -78,22 +77,19 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             ivPhoto
             val expectedRgb = Triple(114, 138, 146)
 
-            slSaturation.value -= 3 * slSaturation.stepSize
+            slSaturation.value -=  3 * slSaturation.stepSize
 
             shadowLooper.runToEndOfTasks()
             Thread.sleep(calculationWaitTime)
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             val actualRgb = singleColor(actualImage, 70, 60)
-            assertColorsValues(
-                "$messageWrongValues For x=70, y=60, avgBrightness=129, cAlpha=1.0, rgbAvg=133, sAlpha=0.7894",
+            assertColorsValues("$messageWrongValues For x=70, y=60, avgBrightness=129, cAlpha=1.0, rgbAvg=133, sAlpha=0.7894",
                 expectedRgb,
                 actualRgb,
-                marginError
-            )
+                marginError)
         }
     }
 
@@ -111,15 +107,12 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             val actualRgb = singleColor(actualImage, 70, 60)
-            assertColorsValues(
-                "$messageWrongValues For x=70, y=60",
+            assertColorsValues("$messageWrongValues For x=70, y=60",
                 expectedRgb,
                 actualRgb,
-                marginError
-            )
+                marginError)
         }
     }
 
@@ -138,15 +131,12 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             val actualRgb = singleColor(actualImage, 70, 60)
-            assertColorsValues(
-                "$messageWrongValues For x=70, y=60, avgBrightness=129, cAlpha=1.0, rgbAvg=133, sAlpha=1.0",
+            assertColorsValues("$messageWrongValues For x=70, y=60, avgBrightness=129, cAlpha=1.0, rgbAvg=133, sAlpha=1.0",
                 expectedRgb,
                 actualRgb,
-                marginError
-            )
+                marginError)
         }
     }
 
@@ -164,15 +154,12 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             val actualRgb = singleColor(actualImage, 70, 60)
-            assertColorsValues(
-                "$messageWrongValues For x=70, y=60",
+            assertColorsValues("$messageWrongValues For x=70, y=60",
                 expectedRgb,
                 actualRgb,
-                marginError
-            )
+                marginError)
         }
     }
 
@@ -199,15 +186,12 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             val actualRgb = singleColor(actualImage, 70, 60)
-            assertColorsValues(
-                "$messageWrongValues For x=70, y=60",
+            assertColorsValues("$messageWrongValues For x=70, y=60",
                 expectedRgb,
                 actualRgb,
-                marginError
-            )
+                marginError)
         }
     }
 
@@ -232,15 +216,12 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             val actualRgb = singleColor(actualImage, 90, 80)
-            assertColorsValues(
-                "$messageWrongValues For x=90, y=80",
+            assertColorsValues("$messageWrongValues For x=90, y=80",
                 expectedRgb,
                 actualRgb,
-                marginError
-            )
+                marginError)
         }
     }
 
@@ -290,13 +271,11 @@ class Stage5UnitTest : PhotoEditorUnitTest<MainActivity>(MainActivity::class.jav
             shadowLooper.runToEndOfTasks()
 
             val actualImage = (ivPhoto.drawable as BitmapDrawable?)?.bitmap ?: throw AssertionError(
-                messageNullAfterFilters
-            )
+                messageNullAfterFilters)
             for (i in sample.indices) {
                 val point = sample[i]
                 val actual = singleColor(actualImage, point.first, point.second)
-                assertColorsValues(
-                    "$messageWrongValues For x=${point.first}, y=${point.second}",
+                assertColorsValues("$messageWrongValues For x=${point.first}, y=${point.second}",
                     expected[i], actual, marginError
                 )
             }
