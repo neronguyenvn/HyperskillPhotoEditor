@@ -126,6 +126,14 @@ class MainActivity : AppCompatActivity() {
         slContrast.addOnChangeListener { _, value, _ ->
             imageProcessor.changeContrast(value)
         }
+
+        slSaturation.addOnChangeListener { _, value, _ ->
+            imageProcessor.changeSaturation(value)
+        }
+
+        slGamma.addOnChangeListener { _, value, _ ->
+            imageProcessor.changeGamma(value)
+        }
     }
 
 

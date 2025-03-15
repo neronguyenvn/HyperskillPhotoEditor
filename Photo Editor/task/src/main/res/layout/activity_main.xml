@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
+    android:paddingTop="24dp"
     tools:context=".MainActivity">
 
     <ImageView
@@ -13,7 +14,6 @@
         android:layout_height="300dp"
         android:importantForAccessibility="no"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -102,4 +102,58 @@
         app:layout_constraintHorizontal_weight="0.7"
         app:layout_constraintStart_toEndOf="@id/tv_constrast"
         app:layout_constraintTop_toBottomOf="@id/slBrightness" />
+
+    <TextView
+        android:id="@+id/tv_saturation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Saturation "
+        app:layout_constraintBottom_toBottomOf="@id/slSaturation"
+        app:layout_constraintEnd_toStartOf="@id/slSaturation"
+        app:layout_constraintHorizontal_weight="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/slSaturation"
+        tools:ignore="HardcodedText" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slSaturation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:importantForAccessibility="no"
+        android:stepSize="10"
+        android:value="0"
+        android:valueFrom="-250"
+        android:valueTo="250"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="0.7"
+        app:layout_constraintStart_toEndOf="@id/tv_saturation"
+        app:layout_constraintTop_toBottomOf="@id/slContrast" />
+
+    <TextView
+        android:id="@+id/tv_gamma"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Gamma "
+        app:layout_constraintBottom_toBottomOf="@id/slGamma"
+        app:layout_constraintEnd_toStartOf="@id/slGamma"
+        app:layout_constraintHorizontal_weight="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/slGamma"
+        tools:ignore="HardcodedText" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slGamma"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:importantForAccessibility="no"
+        android:stepSize="0.2"
+        android:value="1"
+        android:valueFrom="0.2"
+        android:valueTo="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="0.7"
+        app:layout_constraintStart_toEndOf="@id/tv_gamma"
+        app:layout_constraintTop_toBottomOf="@id/slSaturation" />
 </androidx.constraintlayout.widget.ConstraintLayout>
