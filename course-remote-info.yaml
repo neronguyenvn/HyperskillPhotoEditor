@@ -4,7 +4,7 @@ hyperskill_project:
   is_template_based: false
   use_ide: true
   environment: android
-update_date: "Sat, 15 Mar 2025 10:39:29 UTC"
+update_date: "Sun, 16 Mar 2025 07:41:00 UTC"
 stages:
   - id: 1206
     step: 18740
@@ -23,7 +23,7 @@ stages:
     is_completed: true
   - id: 1211
     step: 18745
-    is_completed: false
+    is_completed: true
 topics:
   0:
     - title: Introduction to UI/UX

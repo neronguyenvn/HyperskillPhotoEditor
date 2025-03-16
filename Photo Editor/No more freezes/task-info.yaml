@@ -42,31 +42,35 @@ files:
   - name: src/test/java/org/hyperskill/photoeditor/internals/PhotoEditorUnitTest.kt
     visible: false
     learner_created: false
-  - name: src/test/java/org/hyperskill/photoeditor/Stage2UnitTestB.kt
-    visible: false
-    learner_created: false
   - name: src/test/java/org/hyperskill/photoeditor/Stage3UnitTest.kt
     visible: false
     learner_created: false
-  - name: src/test/java/org/hyperskill/photoeditor/Stage4UnitTestB.kt
-    visible: false
-    learner_created: false
-  - name: src/test/java/org/hyperskill/photoeditor/Stage5UnitTestB.kt
-    visible: false
-    learner_created: false
-  - name: src/test/java/org/hyperskill/photoeditor/Stage6UnitTest.kt
-    visible: false
-    learner_created: false
   - name: src/test/java/org/hyperskill/photoeditor/Stage1UnitTest.kt
+    visible: true
+    learner_created: true
+  - name: src/main/java/org/hyperskill/photoeditor/ImageProcessor.kt
     visible: true
     learner_created: true
   - name: src/main/res/drawable/myexample.jpg
     visible: true
     is_binary: true
     learner_created: true
-  - name: src/main/java/org/hyperskill/photoeditor/ImageProcessor.kt
+  - name: src/test/java/org/hyperskill/photoeditor/Stage6UnitTest.kt
+    visible: true
+    learner_created: true
+  - name: src/test/java/org/hyperskill/photoeditor/Stage4UnitTestB.kt
+    visible: true
+    learner_created: true
+  - name: src/test/java/org/hyperskill/photoeditor/Stage5UnitTestB.kt
+    visible: true
+    learner_created: true
+  - name: src/test/java/org/hyperskill/photoeditor/Stage2UnitTestB.kt
     visible: true
     learner_created: true
 feedback_link: https://hyperskill.org/learn/step/18745#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">Hyperskill</a>
+    to continue learning.
+  time: "Sun, 16 Mar 2025 09:32:12 UTC"
 record: 6

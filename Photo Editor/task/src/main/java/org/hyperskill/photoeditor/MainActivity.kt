@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             result.data?.data?.let { imageUri ->
                 imageProcessor.setImage(imageUri)
+                // For test case
                 imageView.setImageURI(imageUri)
             }
         }
@@ -47,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val bitmap = createBitmap()
-        imageView.setImageBitmap(bitmap)
         imageProcessor = ImageProcessor(this, bitmap)
 
         setupButtonListeners()

@@ -1,20 +1,32 @@
 package org.hyperskill.photoeditor
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.math.pow
 
-class ImageProcessor(private val context: Context, loadedImage: Bitmap) {
+class ImageProcessor(
+    private val context: AppCompatActivity,
+    private var loadedImage: Bitmap
+) {
 
     private val _processedImage = MutableStateFlow<Bitmap>(loadedImage)
     private val _brightnessFilterValue = MutableStateFlow(0f)
@@ -22,26 +34,22 @@ class ImageProcessor(private val context: Context, loadedImage: Bitmap) {
     private val _saturationFilterValue = MutableStateFlow(0f)
     private val _gammaFilterValue = MutableStateFlow(1f)
 
-    val processedImage = combine(
-        _processedImage,
-        _brightnessFilterValue,
-        _contrastFilterValue,
-        _saturationFilterValue,
-        _gammaFilterValue
-    ) { image, brightness, contrast, saturation, gamma ->
+    private var filterJob: Job? = null
 
-        image
-            .changeBrightnessInternally(brightness.toInt())
-            .changeContrastInternally(contrast)
-            .changeSaturationInternally(saturation)
-            .changeGammaInternally(gamma.toDouble())
-    }
+    val processedImage = _processedImage
+        .onStart { setupFilterJob() }
+        .stateIn(
+            scope = context.lifecycleScope,
+            started = SharingStarted.Lazily,
+            initialValue = loadedImage
+        )
 
     fun setImage(imageUri: Uri) {
         val bitmap = BitmapFactory
             .decodeStream(context.contentResolver.openInputStream(imageUri))
             ?: throw IOException("No such file or Incorrect format")
 
+        loadedImage = bitmap
         _processedImage.update { bitmap }
     }
 
@@ -59,6 +67,70 @@ class ImageProcessor(private val context: Context, loadedImage: Bitmap) {
 
     fun changeGamma(value: Float) {
         _gammaFilterValue.update { value }
+    }
+
+    private fun setupFilterJob() {
+        context.lifecycleScope.launch {
+            _brightnessFilterValue.onEach {
+                doFilter(
+                    brightness = it,
+                    contrast = _contrastFilterValue.value,
+                    saturation = _saturationFilterValue.value,
+                    gamma = _gammaFilterValue.value
+                )
+            }.launchIn(this)
+
+            _contrastFilterValue.onEach {
+                doFilter(
+                    brightness = _brightnessFilterValue.value,
+                    contrast = it,
+                    saturation = _saturationFilterValue.value,
+                    gamma = _gammaFilterValue.value
+                )
+            }.launchIn(this)
+
+            _saturationFilterValue.onEach {
+                doFilter(
+                    brightness = _brightnessFilterValue.value,
+                    contrast = _contrastFilterValue.value,
+                    saturation = it,
+                    gamma = _gammaFilterValue.value
+                )
+            }.launchIn(this)
+
+            _gammaFilterValue.onEach {
+                doFilter(
+                    brightness = _brightnessFilterValue.value,
+                    contrast = _contrastFilterValue.value,
+                    saturation = _saturationFilterValue.value,
+                    gamma = it
+                )
+            }.launchIn(this)
+        }
+    }
+
+    private fun doFilter(
+        brightness: Float,
+        contrast: Float,
+        saturation: Float,
+        gamma: Float
+    ) {
+        filterJob?.cancel()
+        filterJob = context.lifecycleScope.launch(Dispatchers.Default) {
+            println(buildString {
+                append("onSliderChanges ")
+                append("job making calculations running on thread ${Thread.currentThread().name}")
+            })
+
+            val result = loadedImage
+                .changeBrightnessInternally(brightness.toInt())
+                .changeContrastInternally(contrast)
+                .changeSaturationInternally(saturation)
+                .changeGammaInternally(gamma.toDouble())
+
+            ensureActive()
+            _processedImage.update { result }
+        }
     }
 
     private fun Bitmap.changeBrightnessInternally(value: Int = 0): Bitmap {
