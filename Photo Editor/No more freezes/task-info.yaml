@@ -67,10 +67,13 @@ files:
   - name: src/test/java/org/hyperskill/photoeditor/Stage2UnitTestB.kt
     visible: true
     learner_created: true
+  - name: src/main/java/org/hyperskill/photoeditor/FilterSettings.kt
+    visible: true
+    learner_created: true
 feedback_link: https://hyperskill.org/learn/step/18745#comment
 status: Solved
 feedback:
   message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">Hyperskill</a>
     to continue learning.
-  time: "Sun, 16 Mar 2025 09:32:12 UTC"
+  time: "Sun, 16 Mar 2025 09:48:45 UTC"
 record: 6

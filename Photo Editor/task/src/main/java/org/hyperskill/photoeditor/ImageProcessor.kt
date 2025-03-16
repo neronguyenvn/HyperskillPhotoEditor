@@ -14,8 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -71,62 +70,40 @@ class ImageProcessor(
 
     private fun setupFilterJob() {
         context.lifecycleScope.launch {
-            _brightnessFilterValue.onEach {
-                doFilter(
-                    brightness = it,
-                    contrast = _contrastFilterValue.value,
-                    saturation = _saturationFilterValue.value,
-                    gamma = _gammaFilterValue.value
-                )
-            }.launchIn(this)
+            combine(
+                _brightnessFilterValue,
+                _contrastFilterValue,
+                _saturationFilterValue,
+                _gammaFilterValue
+            ) { brightness, contrast, saturation, gamma ->
 
-            _contrastFilterValue.onEach {
-                doFilter(
-                    brightness = _brightnessFilterValue.value,
-                    contrast = it,
-                    saturation = _saturationFilterValue.value,
-                    gamma = _gammaFilterValue.value
+                FilterSettings(
+                    brightness = brightness,
+                    contrast = contrast,
+                    saturation = saturation,
+                    gamma = gamma
                 )
-            }.launchIn(this)
-
-            _saturationFilterValue.onEach {
-                doFilter(
-                    brightness = _brightnessFilterValue.value,
-                    contrast = _contrastFilterValue.value,
-                    saturation = it,
-                    gamma = _gammaFilterValue.value
-                )
-            }.launchIn(this)
-
-            _gammaFilterValue.onEach {
-                doFilter(
-                    brightness = _brightnessFilterValue.value,
-                    contrast = _contrastFilterValue.value,
-                    saturation = _saturationFilterValue.value,
-                    gamma = it
-                )
-            }.launchIn(this)
+            }.collect { doFilter(it) }
         }
     }
 
-    private fun doFilter(
-        brightness: Float,
-        contrast: Float,
-        saturation: Float,
-        gamma: Float
-    ) {
+    private fun doFilter(filterSettings: FilterSettings) {
         filterJob?.cancel()
         filterJob = context.lifecycleScope.launch(Dispatchers.Default) {
-            println(buildString {
-                append("onSliderChanges ")
-                append("job making calculations running on thread ${Thread.currentThread().name}")
-            })
+            println(
+                buildString {
+                    append("onSliderChanges ")
+                    append("job making calculations running on thread ${Thread.currentThread().name}")
+                }
+            )
 
-            val result = loadedImage
-                .changeBrightnessInternally(brightness.toInt())
-                .changeContrastInternally(contrast)
-                .changeSaturationInternally(saturation)
-                .changeGammaInternally(gamma.toDouble())
+            val result = with(filterSettings) {
+                loadedImage
+                    .changeBrightnessInternally(brightness.toInt())
+                    .changeContrastInternally(contrast)
+                    .changeSaturationInternally(saturation)
+                    .changeGammaInternally(gamma.toDouble())
+            }
 
             ensureActive()
             _processedImage.update { result }
