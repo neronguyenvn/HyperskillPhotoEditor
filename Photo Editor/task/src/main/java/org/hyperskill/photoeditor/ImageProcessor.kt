@@ -102,6 +102,7 @@ class ImageProcessor(
 
         val newImage = copy(Bitmap.Config.ARGB_8888, true)
         val duration = measureTimeMillis {
+
             val pixelBuffer = IntArray(width * height)
             getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
@@ -128,7 +129,8 @@ class ImageProcessor(
 
         val newImage = copy(Bitmap.Config.ARGB_8888, true)
         val duration = measureTimeMillis {
-            val pixelBuffer = IntArray(width * height)
+
+        val pixelBuffer = IntArray(width * height)
             getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
             val contrastFactor = (255 + value) / (255 - value)
@@ -169,6 +171,7 @@ class ImageProcessor(
 
         val newImage = copy(Bitmap.Config.ARGB_8888, true)
         val duration = measureTimeMillis {
+
             val pixelBuffer = IntArray(width * height)
             getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
@@ -177,7 +180,7 @@ class ImageProcessor(
             for (i in pixelBuffer.indices) {
                 val pixel = pixelBuffer[i]
 
-                val rgbAvg = listOf(pixel.red, pixel.green, pixel.blue).average()
+                val rgbAvg = (pixel.red + pixel.green + pixel.blue) / 3
 
                 val red = (saturationFactor * (pixel.red - rgbAvg) + rgbAvg)
                     .toInt()
@@ -208,9 +211,9 @@ class ImageProcessor(
 
         val newImage = copy(Bitmap.Config.ARGB_8888, true)
         val duration = measureTimeMillis {
-            val pixelBuffer = IntArray(width * height)
-            getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
+        val pixelBuffer = IntArray(width * height)
+            getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
             for (i in pixelBuffer.indices) {
                 val pixel = pixelBuffer[i]
