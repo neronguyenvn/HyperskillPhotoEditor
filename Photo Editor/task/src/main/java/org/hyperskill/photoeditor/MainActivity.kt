@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             result.data?.data?.let { imageUri ->
                 imageProcessor.setImage(imageUri)
-                // For test case
-                imageView.setImageURI(imageUri)
             }
         }
     }
