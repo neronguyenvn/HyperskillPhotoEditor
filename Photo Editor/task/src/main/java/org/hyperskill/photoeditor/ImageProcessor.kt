@@ -14,7 +14,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,10 +30,7 @@ class ImageProcessor(
 ) {
 
     private val _processedImage = MutableStateFlow<Bitmap>(loadedImage)
-    private val _brightnessFilterValue = MutableStateFlow(0f)
-    private val _contrastFilterValue = MutableStateFlow(0f)
-    private val _saturationFilterValue = MutableStateFlow(0f)
-    private val _gammaFilterValue = MutableStateFlow(1f)
+    private val _filterSettings = MutableStateFlow(FilterSettings.default)
 
     private var filterJob: Job? = null
 
@@ -43,6 +42,8 @@ class ImageProcessor(
             initialValue = loadedImage
         )
 
+    val filterSettings = _filterSettings.asStateFlow()
+
     fun setImage(imageUri: Uri) {
         val bitmap = BitmapFactory
             .decodeStream(context.contentResolver.openInputStream(imageUri))
@@ -50,41 +51,29 @@ class ImageProcessor(
 
         loadedImage = bitmap
         _processedImage.update { bitmap }
+        _filterSettings.update { FilterSettings.default }
     }
 
     fun changeBrightness(value: Float) {
-        _brightnessFilterValue.update { value }
+        _filterSettings.update { it.copy(brightness = value) }
     }
 
     fun changeContrast(value: Float) {
-        _contrastFilterValue.update { value }
+        _filterSettings.update { it.copy(contrast = value) }
     }
 
     fun changeSaturation(value: Float) {
-        _saturationFilterValue.update { value }
+        _filterSettings.update { it.copy(saturation = value) }
     }
 
     fun changeGamma(value: Float) {
-        _gammaFilterValue.update { value }
+        _filterSettings.update { it.copy(gamma = value) }
     }
 
     private fun setupFilterJob() {
-        context.lifecycleScope.launch {
-            combine(
-                _brightnessFilterValue,
-                _contrastFilterValue,
-                _saturationFilterValue,
-                _gammaFilterValue
-            ) { brightness, contrast, saturation, gamma ->
-
-                FilterSettings(
-                    brightness = brightness,
-                    contrast = contrast,
-                    saturation = saturation,
-                    gamma = gamma
-                )
-            }.collect { doFilter(it) }
-        }
+        _filterSettings.onEach {
+            doFilter(it)
+        }.launchIn(context.lifecycleScope)
     }
 
     private fun doFilter(filterSettings: FilterSettings) {
@@ -110,7 +99,7 @@ class ImageProcessor(
         }
     }
 
-    private fun Bitmap.changeBrightnessInternally(value: Int = 0): Bitmap {
+    private fun Bitmap.changeBrightnessInternally(value: Int): Bitmap {
         if (value == 0) {
             return this
         }
@@ -132,7 +121,7 @@ class ImageProcessor(
         return newImage
     }
 
-    private fun Bitmap.changeContrastInternally(value: Float = 0f): Bitmap {
+    private fun Bitmap.changeContrastInternally(value: Float): Bitmap {
         if (value == 0f) {
             return this
         }
@@ -169,7 +158,7 @@ class ImageProcessor(
         return newImage
     }
 
-    private fun Bitmap.changeSaturationInternally(value: Float = 0f): Bitmap {
+    private fun Bitmap.changeSaturationInternally(value: Float): Bitmap {
         if (value == 0f) {
             return this
         }
@@ -204,7 +193,7 @@ class ImageProcessor(
         return newImage
     }
 
-    private fun Bitmap.changeGammaInternally(value: Double = 1.0): Bitmap {
+    private fun Bitmap.changeGammaInternally(value: Double): Bitmap {
         if (value == 1.0) {
             return this
         }

@@ -54,6 +54,15 @@ class MainActivity : AppCompatActivity() {
         imageProcessor.processedImage.onEach {
             imageView.setImageBitmap(it)
         }.launchIn(lifecycleScope)
+
+        imageProcessor.filterSettings.onEach {
+            with(binding) {
+                slBrightness.value = it.brightness
+                slContrast.value = it.contrast
+                slSaturation.value = it.saturation
+                slGamma.value = it.gamma
+            }
+        }.launchIn(lifecycleScope)
     }
 
     override fun onRequestPermissionsResult(
