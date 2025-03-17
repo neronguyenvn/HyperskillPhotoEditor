@@ -106,12 +106,13 @@ class ImageProcessor(
             val pixelBuffer = IntArray(width * height)
             getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
+            val brightnessLUT = IntArray(256) { it.plusAndCoerce(value) }
 
             for (i in pixelBuffer.indices) {
                 val pixel = pixelBuffer[i]
-                val red = pixel.red.plusAndCoerce(value)
-                val green = pixel.green.plusAndCoerce(value)
-                val blue = pixel.blue.plusAndCoerce(value)
+                val red = brightnessLUT[pixel.red]
+                val green = brightnessLUT[pixel.green]
+                val blue = brightnessLUT[pixel.blue]
                 pixelBuffer[i] = Color.rgb(red, green, blue)
             }
 
@@ -130,7 +131,7 @@ class ImageProcessor(
         val newImage = copy(Bitmap.Config.ARGB_8888, true)
         val duration = measureTimeMillis {
 
-        val pixelBuffer = IntArray(width * height)
+            val pixelBuffer = IntArray(width * height)
             getPixels(pixelBuffer, 0, width, 0, 0, width, height)
 
             val contrastFactor = (255 + value) / (255 - value)
@@ -139,21 +140,17 @@ class ImageProcessor(
                 .sumOf { pixel -> pixel.red + pixel.green + pixel.blue }
                 .div(pixelBuffer.size * 3)
 
+            val contrastLUT = IntArray(256) {
+                (contrastFactor * (it - avgBright) + avgBright)
+                    .toInt()
+                    .plusAndCoerce()
+            }
+
             for (i in pixelBuffer.indices) {
                 val pixel = pixelBuffer[i]
-
-                val red = (contrastFactor * (pixel.red - avgBright) + avgBright)
-                    .toInt()
-                    .plusAndCoerce()
-
-                val green = (contrastFactor * (pixel.green - avgBright) + avgBright)
-                    .toInt()
-                    .plusAndCoerce()
-
-                val blue = (contrastFactor * (pixel.blue - avgBright) + avgBright)
-                    .toInt()
-                    .plusAndCoerce()
-
+                val red = contrastLUT[pixel.red]
+                val green = contrastLUT[pixel.green]
+                val blue = contrastLUT[pixel.blue]
                 pixelBuffer[i] = Color.rgb(red, green, blue)
             }
 
@@ -212,24 +209,20 @@ class ImageProcessor(
         val newImage = copy(Bitmap.Config.ARGB_8888, true)
         val duration = measureTimeMillis {
 
-        val pixelBuffer = IntArray(width * height)
+            val pixelBuffer = IntArray(width * height)
             getPixels(pixelBuffer, 0, width, 0, 0, width, height)
+
+            val gammaLUT = IntArray(256) {
+                (255 * (it / 255.0).pow(value))
+                    .toInt()
+                    .plusAndCoerce()
+            }
 
             for (i in pixelBuffer.indices) {
                 val pixel = pixelBuffer[i]
-
-                val red = (255 * (pixel.red.toDouble() / 255).pow(value))
-                    .toInt()
-                    .plusAndCoerce()
-
-                val green = (255 * (pixel.green.toDouble() / 255).pow(value))
-                    .toInt()
-                    .plusAndCoerce()
-
-                val blue = (255 * (pixel.blue.toDouble() / 255).pow(value))
-                    .toInt()
-                    .plusAndCoerce()
-
+                val red = gammaLUT[pixel.red]
+                val green = gammaLUT[pixel.green]
+                val blue = gammaLUT[pixel.blue]
                 pixelBuffer[i] = Color.rgb(red, green, blue)
             }
 
